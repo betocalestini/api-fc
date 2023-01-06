@@ -1,8 +1,9 @@
 package entity
 
 import (
-	"github.com/betocalestini/api-fc/pkg/entity"
+	"errors"
 
+	"github.com/betocalestini/api-fc/pkg/entity"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -18,6 +19,16 @@ func NewUser(name, email, password string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
+	if password == "" {
+		return nil, errors.New("password is required")
+	}
+	if name == "" {
+		return nil, errors.New("name is required")
+	}
+	if email == "" {
+		return nil, errors.New("email is required")
+	}
+
 	return &User{
 		ID:       entity.NewID(),
 		Name:     name,
@@ -26,7 +37,7 @@ func NewUser(name, email, password string) (*User, error) {
 	}, nil
 }
 
-func (u *User) Validateassword(password string) bool {
+func (u *User) ValidatePassword(password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
 	return err == nil
 }
