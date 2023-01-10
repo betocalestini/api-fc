@@ -1,24 +1,16 @@
 package database
 
-import (
-	"github.com/betocalestini/api-fc/internal/entity"
-	"gorm.io/gorm"
-)
+import "github.com/betocalestini/api-fc/internal/entity"
 
-type User struct {
-	DB *gorm.DB
+type UserInterface interface {
+	Create(user *entity.User) error
+	FindByEmail(email string) (*entity.User, error)
 }
 
-func NewUser(db *gorm.DB) *User {
-	return &User{DB: db}
-}
-
-func (u *User) Create(user *entity.User) error {
-	return u.DB.Create(user).Error
-}
-
-func (u *User) FindByEmail(email string) (*entity.User, error) {
-	var user entity.User
-	err := u.DB.Where("email = ?", email).First(&user).Error
-	return &user, err
+type ProductInterface interface {
+	Create(product *entity.Product) error
+	FindAll(page, limit int, sort string) ([]entity.Product, error)
+	FindByID(id string) (*entity.Product, error)
+	Update(product *entity.Product) error
+	Delete(id string) error
 }
