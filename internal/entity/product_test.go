@@ -7,23 +7,23 @@ import (
 )
 
 func Test_NewProduct(t *testing.T) {
-	product, err := NewProduct("Product 1", 100)
+	product, err := NewProduct("Product 1", 100.0)
 	assert.Nil(t, err)
 	assert.NotNil(t, product)
 	assert.NotNil(t, product.ID)
 	assert.Equal(t, "Product 1", product.Name)
-	assert.Equal(t, 100, product.Price)
+	assert.Equal(t, 100.0, product.Price)
 	assert.NotNil(t, product.CreatedAt)
 }
 
 func Fuzz_NewProduct(f *testing.F) {
 	// Add test cases with specific values for name and price
-	f.Add("Product 1", 100)
+	f.Add("Product 1", 100.00)
 
-	f.Fuzz(func(t *testing.T, name string, price int) {
+	f.Fuzz(func(t *testing.T, name string, price float64) {
 		product, err := NewProduct(name, price)
 
-		if name == "" || price <= 0 {
+		if name == "" || price <= 0.0 {
 			assert.NotNil(t, err)
 			return
 		} else {
@@ -39,7 +39,7 @@ func Fuzz_NewProduct(f *testing.F) {
 }
 
 func Test_ProductWhenNameIsRequired(t *testing.T) {
-	product, err := NewProduct("", 100)
+	product, err := NewProduct("", 100.0)
 	assert.NotNil(t, err)
 	assert.Nil(t, product)
 	assert.Equal(t, ErrNameIsRequired, err)
@@ -53,14 +53,14 @@ func Test_ProductWhenPriceIsRequired(t *testing.T) {
 }
 
 func Test_ProductWhenPriceIsInvalid(t *testing.T) {
-	product, err := NewProduct("Product 1", -100)
+	product, err := NewProduct("Product 1", -100.0)
 	assert.NotNil(t, err)
 	assert.Nil(t, product)
 	assert.Equal(t, ErrInvalidPrice, err)
 }
 
 func Test_ProductValidate(t *testing.T) {
-	product, _ := NewProduct("Product 1", 100)
+	product, _ := NewProduct("Product 1", 100.0)
 	err := product.Validate()
 	assert.Nil(t, err)
 	assert.NotNil(t, product)
